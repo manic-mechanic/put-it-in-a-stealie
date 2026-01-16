@@ -1,12 +1,7 @@
 <svg version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 360 360" xml:space="preserve" width="360" height="360" xmlns="http://www.w3.org/2000/svg">
-  <defs id="defs184">
-    <mask id="center-hole">
-      <rect width="360" height="360" fill="white"/>
-      <circle cx="180" cy="180" r="127" fill="black"/>
-    </mask>
-  </defs>
+  <defs id="defs184"/>
   <g id="g92" transform="translate(-174 -327.443)"/>
-  <g id="g184" transform="translate(-174 -327.443)" mask="url(#center-hole)">
+  <g id="g184" transform="translate(-174 -327.443)">
     <g id="g93" transform="translate(-145.104 -11.552)">
 
     </g>
