@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Put it in a Stealie</title>
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="vendor/cropper.min.css">
 </head>
 <body>
   <main class="container">
@@ -23,6 +24,18 @@
     </div>
     <input type="file" id="file-input" accept="image/*" class="hidden">
   </main>
+  <div id="crop-modal" class="modal hidden">
+    <div class="modal-content">
+      <div class="crop-container">
+        <img id="crop-image" src="" alt="Crop preview">
+      </div>
+      <div class="modal-actions">
+        <button id="crop-cancel" class="btn btn-secondary">Cancel</button>
+        <button id="crop-done" class="btn btn-primary">Done</button>
+      </div>
+    </div>
+  </div>
+  <script src="vendor/cropper.min.js"></script>
   <script type="module" src="js/app.js"></script>
 </body>
 </html>
