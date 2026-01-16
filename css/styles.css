@@ -49,6 +49,7 @@ h1 {
   height: 100%;
   pointer-events: none;
   z-index: 2;
+  mix-blend-mode: multiply;
 }
 
 .user-image-canvas {
