@@ -9,8 +9,14 @@
 <body>
   <main class="container">
     <h1>Put it in a Stealie</h1>
-    <div id="stealie-container">
-      <!-- Stealie and drop zone will go here -->
+    <div id="stealie-container" class="stealie-container">
+      <div id="drop-zone" class="drop-zone">
+        <img src="assets/stealie-bg-none-border-false-bolt-false-color-false.svg"
+             alt="Stealie"
+             class="stealie-frame">
+        <div class="drop-indicator">+</div>
+        <canvas id="user-image-canvas" class="user-image-canvas"></canvas>
+      </div>
     </div>
     <div id="actions" class="actions hidden">
       <!-- Buttons will go here -->
