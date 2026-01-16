@@ -22,6 +22,27 @@ This is a greenfield project. The concept.md specifies:
 - Export to transparent PNG
 - Simple, clean UI aimed at early-to-mid stage developer readability
 
+## Development
+
+No build step required. Open `index.html` directly in a browser.
+
+**Local server (optional, for ES modules in some browsers):**
+```bash
+python3 -m http.server 8000
+# Then open http://localhost:8000
+```
+
+## Testing
+
+Manual testing only for MVP. See `docs/plans/2026-01-16-mvp-design.md` for test checklist.
+
+## File Overview
+
+- `js/app.js` - Main orchestration and state management
+- `js/imageLoader.js` - Drag-drop and file picker handling
+- `js/cropperModal.js` - Cropper.js integration
+- `js/exporter.js` - PNG export via Canvas API
+
 ## Development Approach
 
 Per concept.md, use popular, well-maintained libraries. The codebase should prioritize clarity and simplicity over cleverness.
