@@ -180,3 +180,33 @@ h1 {
 .cropper-face {
   border-radius: 50%;
 }
+
+/* Polish */
+.drop-zone {
+  transition: transform 0.2s ease;
+}
+
+.drop-zone:hover {
+  transform: scale(1.02);
+}
+
+.drop-indicator {
+  transition: color 0.2s ease;
+}
+
+.drop-zone:hover .drop-indicator {
+  color: #999;
+}
+
+/* Ensure modal is scrollable on small screens */
+@media (max-height: 500px) {
+  .modal-content {
+    max-height: 95vh;
+    overflow-y: auto;
+  }
+
+  .crop-container {
+    width: 250px;
+    height: 250px;
+  }
+}
