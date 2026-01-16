@@ -36,7 +36,7 @@ function drawCroppedImage(croppedCanvas) {
 
   const centerX = size / 2;
   const centerY = size / 2;
-  const radius = 115;
+  const radius = 127; // Precise Stealie center radius
 
   ctx.save();
   ctx.beginPath();
