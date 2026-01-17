@@ -3,6 +3,8 @@ import { initImageLoader } from './imageLoader.js';
 import { openCropModal } from './cropperModal.js';
 import { exportToPNG } from './exporter.js';
 
+import { STEALIE_GEOMETRY } from './constants.js';
+
 const dropZone = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
 const userCanvas = document.getElementById('user-image-canvas');
@@ -14,6 +16,7 @@ const btnRecrop = document.getElementById('btn-recrop');
 const btnNew = document.getElementById('btn-new');
 
 let currentImage = null;
+let currentCroppedCanvas = null; // Store high-res canvas
 
 function handleImageLoad(img) {
   currentImage = img;
@@ -21,6 +24,8 @@ function handleImageLoad(img) {
 }
 
 function handleCropComplete(croppedCanvas) {
+  // cropCanvas is now 1024x1024 (High Res)
+  currentCroppedCanvas = croppedCanvas;
   drawCroppedImage(croppedCanvas);
   dropZone.classList.add('has-image');
   actionsDiv.classList.remove('hidden');
@@ -28,26 +33,23 @@ function handleCropComplete(croppedCanvas) {
 
 function drawCroppedImage(croppedCanvas) {
   const ctx = userCanvas.getContext('2d');
-  const size = 360;
-  userCanvas.width = size;
-  userCanvas.height = size;
+  const { DISPLAY_SIZE, CENTER_X, CENTER_Y, RADIUS } = STEALIE_GEOMETRY;
 
-  ctx.clearRect(0, 0, size, size);
+  userCanvas.width = DISPLAY_SIZE;
+  userCanvas.height = DISPLAY_SIZE;
 
-  const centerX = size / 2;
-  const centerY = size / 2;
-  const radius = 127; // Precise Stealie center radius
+  ctx.clearRect(0, 0, DISPLAY_SIZE, DISPLAY_SIZE);
 
   ctx.save();
   ctx.beginPath();
-  ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+  ctx.arc(CENTER_X, CENTER_Y, RADIUS, 0, Math.PI * 2);
   ctx.clip();
 
-  const imgSize = radius * 2;
+  const imgSize = RADIUS * 2;
   ctx.drawImage(
     croppedCanvas,
-    centerX - radius,
-    centerY - radius,
+    CENTER_X - RADIUS,
+    CENTER_Y - RADIUS,
     imgSize,
     imgSize
   );
@@ -61,12 +63,18 @@ function resetState() {
   dropZone.classList.remove('has-image');
   actionsDiv.classList.add('hidden');
   currentImage = null;
+  currentCroppedCanvas = null;
   fileInput.value = '';
 }
 
 // Button handlers
 btnSave.addEventListener('click', () => {
-  exportToPNG(stealieImg, userCanvas);
+  if (currentCroppedCanvas) {
+    // Pass the high-res source instead of the low-res userCanvas
+    exportToPNG(stealieImg, currentCroppedCanvas);
+  } else {
+    exportToPNG(stealieImg, userCanvas);
+  }
 });
 
 btnRecrop.addEventListener('click', () => {
@@ -78,6 +86,17 @@ btnRecrop.addEventListener('click', () => {
 btnNew.addEventListener('click', () => {
   resetState();
   fileInput.click();
+});
+
+// Smart click handler
+dropZone.addEventListener('click', () => {
+  if (currentImage) {
+    // If image exists, open crop modal
+    openCropModal(currentImage, handleCropComplete);
+  } else {
+    // If no image, open file picker
+    fileInput.click();
+  }
 });
 
 initImageLoader(dropZone, fileInput, handleImageLoad);

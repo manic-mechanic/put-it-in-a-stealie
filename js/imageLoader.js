@@ -1,10 +1,8 @@
 // imageLoader.js - Handles file selection and drag-drop
 
 export function initImageLoader(dropZone, fileInput, onImageLoad) {
-  // Click to open file picker
-  dropZone.addEventListener('click', () => {
-    fileInput.click();
-  });
+  // Click handler removed from here to allow app.js to control "edit vs new" logic
+
 
   // File selected via picker
   fileInput.addEventListener('change', (e) => {

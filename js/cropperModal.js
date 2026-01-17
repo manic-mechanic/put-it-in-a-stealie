@@ -31,9 +31,12 @@ export function openCropModal(img, onCropComplete) {
 
   // Done handler
   const handleDone = () => {
+    // Get high-res crop for quality, app.js and exporter.js will handle display sizing
     const canvas = cropper.getCroppedCanvas({
-      width: 256,
-      height: 256,
+      width: 1024,
+      height: 1024,
+      imageSmoothingEnabled: true,
+      imageSmoothingQuality: 'high',
     });
     closeCropModal();
     cleanup();
