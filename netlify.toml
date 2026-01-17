@@ -1,0 +1,9 @@
+[build]
+  # No build command needed for raw HTML/JS
+  command = "" 
+  # Serve the current directory
+  publish = "."
+
+[dev]
+  # distinct from production, useful if you use 'netlify dev'
+  framework = "#static"
