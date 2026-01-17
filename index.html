@@ -5,6 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Put it in a Stealie</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Macondo&family=Zalando+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="vendor/cropper.min.css">
 </head>
@@ -49,11 +52,17 @@
   </main>
   <div id="crop-modal" class="modal hidden">
     <div class="modal-content">
+      <h2 class="modal-title">Position your image</h2>
       <div class="crop-container">
         <img id="crop-image" src="" alt="Crop preview">
       </div>
+      <div class="zoom-control">
+        <span class="zoom-label">−</span>
+        <input type="range" id="zoom-slider" min="0.1" max="3" step="0.05" value="1">
+        <span class="zoom-label">+</span>
+      </div>
       <div class="modal-actions">
-        <button id="crop-cancel" class="btn btn-secondary">Cancel</button>
+        <button id="crop-cancel" class="btn btn-ghost">Cancel</button>
         <button id="crop-done" class="btn btn-primary">Done</button>
       </div>
     </div>

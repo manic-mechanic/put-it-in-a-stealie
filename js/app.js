@@ -1,6 +1,6 @@
 // app.js - Main orchestration
 import { initImageLoader } from './imageLoader.js';
-import { openCropModal } from './cropperModal.js';
+import { openCropModal, clearCropState } from './cropperModal.js';
 import { exportToPNG } from './exporter.js';
 
 import { STEALIE_GEOMETRY } from './constants.js';
@@ -20,7 +20,8 @@ let currentCroppedCanvas = null; // Store high-res canvas
 
 function handleImageLoad(img) {
   currentImage = img;
-  openCropModal(img, handleCropComplete);
+  clearCropState(); // New image, fresh crop
+  openCropModal(img, handleCropComplete, false);
 }
 
 function handleCropComplete(croppedCanvas) {
@@ -79,7 +80,7 @@ btnSave.addEventListener('click', () => {
 
 btnRecrop.addEventListener('click', () => {
   if (currentImage) {
-    openCropModal(currentImage, handleCropComplete);
+    openCropModal(currentImage, handleCropComplete, true); // Restore previous crop
   }
 });
 
@@ -91,8 +92,8 @@ btnNew.addEventListener('click', () => {
 // Smart click handler
 dropZone.addEventListener('click', () => {
   if (currentImage) {
-    // If image exists, open crop modal
-    openCropModal(currentImage, handleCropComplete);
+    // If image exists, open crop modal (restore state)
+    openCropModal(currentImage, handleCropComplete, true);
   } else {
     // If no image, open file picker
     fileInput.click();
