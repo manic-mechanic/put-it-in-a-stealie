@@ -109,7 +109,8 @@ h1 {
 }
 
 .drop-zone.drag-over .drag-overlay,
-.drop-zone:active .drag-overlay {
+.drop-zone:active .drag-overlay,
+.drop-zone.is-active .drag-overlay {
   /* Final requested color: Gray (matching original +) */
   background: radial-gradient(circle at 184px 133px,
       rgba(204, 204, 204, 0.8) 0%,
@@ -118,7 +119,8 @@ h1 {
 }
 
 .drop-zone.drag-over,
-.drop-zone:active {
+.drop-zone:active,
+.drop-zone.is-active {
   /* clear background on main element since overlay handles it */
   background: none;
   outline: none;
@@ -126,7 +128,8 @@ h1 {
 
 /* White plus when dragging over or active (pressed) */
 .drop-zone.drag-over .drop-indicator,
-.drop-zone:active .drop-indicator {
+.drop-zone:active .drop-indicator,
+.drop-zone.is-active .drop-indicator {
   color: #fff !important;
 }
 
