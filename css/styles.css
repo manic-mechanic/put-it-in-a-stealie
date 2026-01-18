@@ -74,7 +74,8 @@ h1 {
   left: 184px;
   /* CENTER_X */
   transform: translate(-50%, -50%);
-  font-size: 4rem;
+  width: 64px;
+  height: 64px;
   color: #ccc;
   z-index: 10;
   /* Ensure on top */
@@ -82,6 +83,9 @@ h1 {
   pointer-events: none;
   /* Let clicks/drags pass through to drop-zone */
   transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /*

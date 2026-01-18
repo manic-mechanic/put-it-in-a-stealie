@@ -60,13 +60,42 @@ export function exportToPNG(stealieImg, userCanvas, scale = 1.5) {
       // Step 3: Draw punched stealie on top of user image
       ctx.drawImage(stealieCanvas, 0, 0);
 
-      // Trigger download
-      const link = document.createElement('a');
-      link.download = 'my-stealie.png';
-      link.href = exportCanvas.toDataURL('image/png');
-      link.click();
+      exportCanvas.toBlob(async (blob) => {
+        if (!blob) {
+          resolve();
+          return;
+        }
 
-      resolve();
+        const fileName = 'my-stealie.png';
+        const file = new File([blob], fileName, { type: 'image/png' });
+
+        // Try Web Share API Level 2 (Mobile / Supported Browsers)
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              files: [file],
+              title: 'My Stealie',
+              text: 'Check out my Stealie!'
+            });
+            resolve();
+            return;
+          } catch (err) {
+            // User cancelled or share failed, fall back to download
+            console.warn('Share failed or cancelled, falling back to download:', err);
+          }
+        }
+
+        // Fallback: Classic Download
+        const link = document.createElement('a');
+        link.download = fileName;
+        link.href = URL.createObjectURL(blob);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+        
+        resolve();
+      }, 'image/png');
     };
     stealie.src = stealieImg.src;
   });
