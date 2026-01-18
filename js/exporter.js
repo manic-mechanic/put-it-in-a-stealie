@@ -60,6 +60,14 @@ export function exportToPNG(stealieImg, userCanvas, scale = 1.5) {
       // Step 3: Draw punched stealie on top of user image
       ctx.drawImage(stealieCanvas, 0, 0);
 
+      // Track event if GA is present
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'generate_stealie', {
+          'event_category': 'engagement',
+          'event_label': 'stealie_created'
+        });
+      }
+
       exportCanvas.toBlob(async (blob) => {
         if (!blob) {
           resolve();
