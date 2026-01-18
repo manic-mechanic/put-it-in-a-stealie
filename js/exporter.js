@@ -77,7 +77,7 @@ export function exportToPNG(stealieImg, userCanvas, scale = 1.5) {
         const fileName = 'my-stealie.png';
         const file = new File([blob], fileName, { type: 'image/png' });
 
-        // Check if it's a mobile device to decide between Share API and direct download
+        // Simple User Agent check (matches what is working in Prod)
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
         // Try Web Share API Level 2 (Mobile only)

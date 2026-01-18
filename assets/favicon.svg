@@ -46,8 +46,8 @@
     <path style="fill:#ffffff" d="M280.377 614.44c0.198 3.695 1.85 6.865 3.895 8.975 2.045 2.111 3.761 2.902 3.826 1.847 0.068 -1.055 -2.44 -2.507 -4.024 -7.061s1.321 -7.061 -1.782 -7.061c-0.554 0.001 -2.515 1.635 -1.915 3.3" id="path123"/>
     <path style="fill:#ffffff" d="M275.363 616.749c-0.925 -5.675 -0.594 -8.513 -2.639 -7.853 -2.048 0.661 -2.642 5.213 -1.454 8.842s5.611 7.192 6.666 7.325 1.123 0.396 1.188 -0.198 -1.188 -1.913 -2.311 -4.42c-1.121 -2.506 -1.45 -3.696 -1.45 -3.696" id="path124"/>
     <g id="g141" transform="translate(-145.104 -11.552)"/>
-    <!-- Super Huge Dark Plus sign for Favicon -->
-    <line x1="184" y1="20" x2="184" y2="246" stroke="#000" stroke-width="80" stroke-linecap="round" />
-    <line x1="71" y1="133" x2="297" y2="133" stroke="#000" stroke-width="80" stroke-linecap="round" />
   </g>
+  <!-- Plus sign for Favicon (Refined) -->
+  <line x1="184" y1="50" x2="184" y2="216" stroke="#000" stroke-width="40" stroke-linecap="round" />
+  <line x1="101" y1="133" x2="267" y2="133" stroke="#000" stroke-width="40" stroke-linecap="round" />
 </svg>

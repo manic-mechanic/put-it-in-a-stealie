@@ -1,0 +1,20 @@
+# OS generated files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Node
+node_modules/
+npm-debug.log
+
+# Local Env
+.claude/
+.gemini/
+
+# Unused Assets (Generated Variations)
+assets/stealie-bg-false-*.png
+assets/stealie-bg-true-*.png
+assets/stealie-bg-transparent-*.svg
+assets/stealie-bg-transparent-*.html
+assets/stealie-bg-white-*.svg
+assets/stealie-bg-false-*.png

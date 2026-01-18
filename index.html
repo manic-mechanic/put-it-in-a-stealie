@@ -8,8 +8,9 @@
   
   <!-- Favicons -->
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-  <!-- iOS requires a PNG for the home screen icon. Using an existing full-color one for now. -->
-  <link rel="apple-touch-icon" href="assets/stealie-bg-true-border-true-bolt-true-color-true.png">
+  <link rel="mask-icon" href="assets/favicon.svg" color="#000000">
+  <!-- iOS requires a PNG for the home screen icon. -->
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -72,6 +73,9 @@
       </button>
     </div>
     <input type="file" id="file-input" accept="image/*" class="hidden">
+    <footer>
+      by <a href="https://pods.link/greatnorthspecial" target="_blank" rel="noopener noreferrer">Billy Sunday</a>
+    </footer>
   </main>
   <div id="crop-modal" class="modal hidden">
     <div class="modal-content">
@@ -80,9 +84,9 @@
         <img id="crop-image" src="" alt="Crop preview">
       </div>
       <div class="zoom-control">
-        <span class="zoom-label">−</span>
+        <span id="zoom-out" class="zoom-label" style="cursor: pointer;">−</span>
         <input type="range" id="zoom-slider" min="0.1" max="3" step="0.05" value="1">
-        <span class="zoom-label">+</span>
+        <span id="zoom-in" class="zoom-label" style="cursor: pointer;">+</span>
       </div>
       <div class="modal-actions">
         <button id="crop-cancel" class="btn btn-ghost">Cancel</button>

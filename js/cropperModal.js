@@ -11,6 +11,8 @@ export function openCropModal(img, onCropComplete, restoreState = false) {
   const cancelBtn = document.getElementById('crop-cancel');
   const doneBtn = document.getElementById('crop-done');
   const zoomSlider = document.getElementById('zoom-slider');
+  const zoomOutBtn = document.getElementById('zoom-out');
+  const zoomInBtn = document.getElementById('zoom-in');
 
   // Set image source
   cropImage.src = img.src;
@@ -33,10 +35,17 @@ export function openCropModal(img, onCropComplete, restoreState = false) {
         cropper.setCanvasData(savedCanvasData);
         cropper.setData(savedCropData);
       }
-      // Set slider to match zoom level
+      
+      // Get initial zoom data
       const imageData = cropper.getImageData();
-      const initialRatio = imageData.width / imageData.naturalWidth;
-      zoomSlider.value = initialRatio;
+      const currentRatio = imageData.width / imageData.naturalWidth;
+      
+      // Update slider range
+      // Fixed range allows full freedom regardless of initial zoom
+      zoomSlider.min = 0.05; 
+      zoomSlider.max = 5;
+      zoomSlider.step = 0.05;
+      zoomSlider.value = currentRatio;
     },
     zoom(e) {
       // Sync slider when zooming via pinch/scroll (not slider)
@@ -52,6 +61,18 @@ export function openCropModal(img, onCropComplete, restoreState = false) {
       isSliderDriven = true;
       cropper.zoomTo(parseFloat(e.target.value));
       isSliderDriven = false;
+    }
+  };
+
+  const handleZoomIn = () => {
+    if(cropper) {
+        cropper.zoom(0.1);
+    }
+  };
+
+  const handleZoomOut = () => {
+    if(cropper) {
+        cropper.zoom(-0.1);
     }
   };
 
@@ -80,11 +101,15 @@ export function openCropModal(img, onCropComplete, restoreState = false) {
   };
 
   zoomSlider.addEventListener('input', handleZoom);
+  zoomInBtn.addEventListener('click', handleZoomIn);
+  zoomOutBtn.addEventListener('click', handleZoomOut);
   cancelBtn.addEventListener('click', handleCancel);
   doneBtn.addEventListener('click', handleDone);
 
   function cleanup() {
     zoomSlider.removeEventListener('input', handleZoom);
+    zoomInBtn.removeEventListener('click', handleZoomIn);
+    zoomOutBtn.removeEventListener('click', handleZoomOut);
     cancelBtn.removeEventListener('click', handleCancel);
     doneBtn.removeEventListener('click', handleDone);
   }

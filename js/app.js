@@ -7,19 +7,6 @@ import { STEALIE_GEOMETRY } from './constants.js';
 
   const dropZone = document.getElementById('drop-zone');
   const fileInput = document.getElementById('file-input');
-  
-  // Mobile Touch Feedback (since :active can be flaky on iOS)
-  dropZone.addEventListener('touchstart', () => {
-    dropZone.classList.add('is-active');
-  }, { passive: true });
-
-  dropZone.addEventListener('touchend', () => {
-    dropZone.classList.remove('is-active');
-  });
-
-  dropZone.addEventListener('touchcancel', () => {
-    dropZone.classList.remove('is-active');
-  });
 
   // Load existing image if any (e.g. returning from recrop)
 const userCanvas = document.getElementById('user-image-canvas');
