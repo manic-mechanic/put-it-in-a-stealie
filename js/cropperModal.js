@@ -19,7 +19,7 @@ export function openCropModal(img, onCropComplete, restoreState = false) {
   // Initialize Cropper
   cropper = new Cropper(cropImage, {
     aspectRatio: 1,
-    viewMode: 1,
+    viewMode: 3, // Fill the container with the image
     dragMode: 'move', // Allow moving the image canvas
     cropBoxResizable: false, // Lock box size
     cropBoxMovable: false, // Lock box position
