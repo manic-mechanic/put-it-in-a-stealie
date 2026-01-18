@@ -20,9 +20,11 @@ export function openCropModal(img, onCropComplete, restoreState = false) {
   cropper = new Cropper(cropImage, {
     aspectRatio: 1,
     viewMode: 1,
-    dragMode: 'move',
-    cropBoxResizable: true,
-    cropBoxMovable: true,
+    dragMode: 'move', // Allow moving the image canvas
+    cropBoxResizable: false, // Lock box size
+    cropBoxMovable: false, // Lock box position
+    toggleDragModeOnDblclick: false, // specific to this interaction
+    autoCropArea: 1, // Start with max crop box
     background: false,
     guides: false,
     ready() {

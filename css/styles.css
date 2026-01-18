@@ -69,10 +69,10 @@ h1 {
 
 .drop-indicator {
   position: absolute;
-  top: 133px;
-  /* CENTER_Y */
-  left: 184px;
-  /* CENTER_X */
+  top: 36.94%;
+  /* CENTER_Y (133/360) */
+  left: 51.11%;
+  /* CENTER_X (184/360) */
   transform: translate(-50%, -50%);
   width: 64px;
   height: 64px;
