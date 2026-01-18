@@ -91,8 +91,17 @@ export function exportToPNG(stealieImg, userCanvas, scale = 1.5) {
             resolve();
             return;
           } catch (err) {
-            // User cancelled or share failed, fall back to download
-            console.warn('Share failed or cancelled, falling back to download:', err);
+            // User cancelled or share failed
+            console.warn('Share failed or cancelled:', err);
+            
+            // If user explicitly cancelled, do not trigger download
+            if (err.name === 'AbortError') {
+              resolve();
+              return;
+            }
+            
+            // For other errors, we might want to fall back, or just stop.
+            // Continuing execution below will trigger download.
           }
         }
 
