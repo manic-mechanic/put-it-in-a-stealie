@@ -47,7 +47,7 @@
     <path style="fill:#ffffff" d="M275.363 616.749c-0.925 -5.675 -0.594 -8.513 -2.639 -7.853 -2.048 0.661 -2.642 5.213 -1.454 8.842s5.611 7.192 6.666 7.325 1.123 0.396 1.188 -0.198 -1.188 -1.913 -2.311 -4.42c-1.121 -2.506 -1.45 -3.696 -1.45 -3.696" id="path124"/>
     <g id="g141" transform="translate(-145.104 -11.552)"/>
   </g>
-  <!-- Plus sign for Favicon (Refined) -->
-  <line x1="184" y1="50" x2="184" y2="216" stroke="#000" stroke-width="40" stroke-linecap="round" />
-  <line x1="101" y1="133" x2="267" y2="133" stroke="#000" stroke-width="40" stroke-linecap="round" />
+  <!-- Plus sign for Favicon (Refined Gray) -->
+  <line x1="184" y1="83" x2="184" y2="183" stroke="#666" stroke-width="30" stroke-linecap="round" />
+  <line x1="134" y1="133" x2="234" y2="133" stroke="#666" stroke-width="30" stroke-linecap="round" />
 </svg>
