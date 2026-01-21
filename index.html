@@ -46,6 +46,22 @@
   <link href="https://fonts.googleapis.com/css2?family=Macondo&family=Zalando+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="vendor/cropper.min.css">
+  <!-- Sentry Error Tracking -->
+  <script
+    src="https://js.sentry-cdn.com/e3b4e1dcd5f8e8a16810aba47ca6fd41.min.js"
+    crossorigin="anonymous"
+  ></script>
+  <script>
+    Sentry.onLoad(function() {
+      Sentry.init({
+        // Tracing
+        tracesSampleRate: 1.0, // Capture 100% of the transactions
+        // Session Replay
+        replaysSessionSampleRate: 0.1, // Sample 10% of sessions
+        replaysOnErrorSampleRate: 1.0, // Sample 100% of sessions with errors
+      });
+    });
+  </script>
 </head>
 
 <body>

@@ -95,6 +95,15 @@ export function openCropModal(img, onCropComplete, restoreState = false) {
       imageSmoothingEnabled: true,
       imageSmoothingQuality: 'high',
     });
+
+    // Track creation event (User finished cropping)
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', 'stealie_created', {
+        'event_category': 'engagement',
+        'event_label': 'crop_completed'
+      });
+    }
+
     closeCropModal();
     cleanup();
     onCropComplete(canvas);
