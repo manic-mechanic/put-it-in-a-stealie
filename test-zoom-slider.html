@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zoom Slider Bug Test</title>
+  <link rel="stylesheet" href="vendor/cropper/cropper.min.css">
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .test-section {
+      margin: 20px 0;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .test-section h3 {
+      margin-top: 0;
+    }
+    .cropper-container {
+      width: 300px;
+      height: 300px;
+      margin: 10px auto;
+      background: #f0f0f0;
+    }
+    #test-image {
+      max-width: 100%;
+      display: block;
+    }
+    .zoom-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .zoom-controls input[type="range"] {
+      flex: 1;
+    }
+    .debug-info {
+      background: #f5f5f5;
+      padding: 10px;
+      margin-top: 15px;
+      font-family: monospace;
+      font-size: 12px;
+      border-radius: 4px;
+    }
+    .pass { color: green; font-weight: bold; }
+    .fail { color: red; font-weight: bold; }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Zoom Slider Bug Test</h1>
+
+  <div class="test-section">
+    <h3>Bug Description</h3>
+    <p>On mobile, the zoom slider zooms way too quickly and way too far.
+       A small slider movement causes a huge zoom change.</p>
+    <p><strong>Root Cause:</strong> Slider range is 0-1 (absolute zoom ratio),
+       but initial zoom for large images might be 0.05. Moving slider from
+       0.05 to 0.15 feels like nothing but actually zooms 3x.</p>
+  </div>
+
+  <div class="test-section">
+    <h3>Test: Large Image (simulates mobile camera photo)</h3>
+    <p>This uses a 4000x4000 canvas to simulate a mobile photo.</p>
+
+    <div class="cropper-container">
+      <img id="test-image" src="" alt="Test image">
+    </div>
+
+    <div class="zoom-controls">
+      <button id="zoom-out">-</button>
+      <input type="range" id="zoom-slider" min="0" max="1" step="0.01" value="0.5">
+      <button id="zoom-in">+</button>
+    </div>
+
+    <div class="debug-info" id="debug">
+      <div>Image natural size: <span id="natural-size">-</span></div>
+      <div>Container size: <span id="container-size">-</span></div>
+      <div>Initial ratio: <span id="initial-ratio">-</span></div>
+      <div>Slider min: <span id="slider-min">-</span></div>
+      <div>Slider max: <span id="slider-max">-</span></div>
+      <div>Current ratio: <span id="current-ratio">-</span></div>
+      <div>Slider value: <span id="slider-value">-</span></div>
+    </div>
+
+    <div id="test-results" style="margin-top: 15px;"></div>
+  </div>
+
+  <div class="test-section">
+    <h3>Expected Behavior After Fix</h3>
+    <ul>
+      <li>Slider min = initial zoom ratio (image fits container)</li>
+      <li>Slider max = ~3x initial ratio (reasonable zoom limit)</li>
+      <li>Moving slider 10% should zoom ~10-30%, not 200%+</li>
+      <li>Full slider range represents useful zoom levels</li>
+    </ul>
+  </div>
+
+  <script src="vendor/cropper/cropper.min.js"></script>
+  <script>
+    // Create a large test image (simulating mobile camera photo)
+    const canvas = document.createElement('canvas');
+    canvas.width = 4000;
+    canvas.height = 4000;
+    const ctx = canvas.getContext('2d');
+
+    // Draw a pattern so zoom is visible
+    ctx.fillStyle = '#3b82f6';
+    ctx.fillRect(0, 0, 4000, 4000);
+    ctx.fillStyle = '#fff';
+    ctx.font = '200px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('ZOOM TEST', 2000, 2000);
+
+    // Draw grid
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = 10;
+    for (let i = 0; i < 4000; i += 400) {
+      ctx.beginPath();
+      ctx.moveTo(i, 0);
+      ctx.lineTo(i, 4000);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(0, i);
+      ctx.lineTo(4000, i);
+      ctx.stroke();
+    }
+
+    const testImage = document.getElementById('test-image');
+    testImage.src = canvas.toDataURL();
+
+    const zoomSlider = document.getElementById('zoom-slider');
+    const zoomInBtn = document.getElementById('zoom-in');
+    const zoomOutBtn = document.getElementById('zoom-out');
+
+    let cropper = null;
+    let isSliderDriven = false;
+    let initialRatio = null;
+
+    testImage.onload = function() {
+      cropper = new Cropper(testImage, {
+        aspectRatio: 1,
+        viewMode: 3,
+        dragMode: 'move',
+        cropBoxResizable: false,
+        cropBoxMovable: false,
+        autoCropArea: 1,
+        background: false,
+        guides: false,
+        ready() {
+          const imageData = cropper.getImageData();
+          initialRatio = imageData.width / imageData.naturalWidth;
+
+          // === THIS IS THE FIX ===
+          // Range based on initial ratio instead of hardcoded 0-1
+          const minZoom = initialRatio;  // Can't zoom out past fit
+          const maxZoom = initialRatio * 3;  // 3x zoom is reasonable max
+
+          zoomSlider.min = minZoom;
+          zoomSlider.max = maxZoom;
+          zoomSlider.step = (maxZoom - minZoom) / 100;  // 100 steps
+          zoomSlider.value = initialRatio;
+
+          updateDebugInfo();
+          runTests();
+        },
+        zoom(e) {
+          if (!isSliderDriven) {
+            // Clamp to slider range
+            const val = Math.max(parseFloat(zoomSlider.min),
+                                 Math.min(parseFloat(zoomSlider.max), e.detail.ratio));
+            zoomSlider.value = val;
+          }
+          updateDebugInfo();
+        }
+      });
+    };
+
+    zoomSlider.addEventListener('input', (e) => {
+      if (cropper) {
+        isSliderDriven = true;
+        cropper.zoomTo(parseFloat(e.target.value));
+        isSliderDriven = false;
+        updateDebugInfo();
+      }
+    });
+
+    zoomInBtn.addEventListener('click', () => {
+      if (cropper) {
+        const step = (parseFloat(zoomSlider.max) - parseFloat(zoomSlider.min)) / 10;
+        cropper.zoom(step);
+      }
+    });
+
+    zoomOutBtn.addEventListener('click', () => {
+      if (cropper) {
+        const step = (parseFloat(zoomSlider.max) - parseFloat(zoomSlider.min)) / 10;
+        cropper.zoom(-step);
+      }
+    });
+
+    function updateDebugInfo() {
+      if (!cropper) return;
+      const imageData = cropper.getImageData();
+      const containerData = cropper.getContainerData();
+
+      document.getElementById('natural-size').textContent =
+        imageData.naturalWidth + 'x' + imageData.naturalHeight;
+      document.getElementById('container-size').textContent =
+        Math.round(containerData.width) + 'x' + Math.round(containerData.height);
+      document.getElementById('initial-ratio').textContent =
+        initialRatio ? initialRatio.toFixed(4) : '-';
+      document.getElementById('slider-min').textContent =
+        parseFloat(zoomSlider.min).toFixed(4);
+      document.getElementById('slider-max').textContent =
+        parseFloat(zoomSlider.max).toFixed(4);
+      document.getElementById('current-ratio').textContent =
+        (imageData.width / imageData.naturalWidth).toFixed(4);
+      document.getElementById('slider-value').textContent =
+        parseFloat(zoomSlider.value).toFixed(4);
+    }
+
+    function runTests() {
+      const results = document.getElementById('test-results');
+      const tests = [];
+
+      // Test 1: Slider min should equal initial ratio
+      const minEqualsInitial = Math.abs(parseFloat(zoomSlider.min) - initialRatio) < 0.001;
+      tests.push({
+        name: 'Slider min equals initial ratio',
+        pass: minEqualsInitial,
+        detail: 'min=' + zoomSlider.min + ', initial=' + (initialRatio ? initialRatio.toFixed(4) : '-')
+      });
+
+      // Test 2: Slider max should be reasonable (not 1 for large images)
+      const maxIsReasonable = parseFloat(zoomSlider.max) < 0.5;  // For 4000px image in 300px container
+      tests.push({
+        name: 'Slider max is reasonable (not hardcoded 1)',
+        pass: maxIsReasonable,
+        detail: 'max=' + zoomSlider.max + ' (should be ~' + (initialRatio * 3).toFixed(4) + ' for 3x zoom)'
+      });
+
+      // Test 3: Moving slider 50% should not zoom more than 2x
+      const sliderRange = parseFloat(zoomSlider.max) - parseFloat(zoomSlider.min);
+      const midValue = parseFloat(zoomSlider.min) + sliderRange / 2;
+      const zoomAtMid = midValue / initialRatio;
+      tests.push({
+        name: '50% slider = reasonable zoom (< 2x)',
+        pass: zoomAtMid < 2,
+        detail: '50% slider = ' + zoomAtMid.toFixed(2) + 'x zoom'
+      });
+
+      // Build results using DOM methods (safer than innerHTML)
+      while (results.firstChild) {
+        results.removeChild(results.firstChild);
+      }
+
+      const header = document.createElement('h4');
+      header.textContent = 'Test Results:';
+      results.appendChild(header);
+
+      tests.forEach(function(t) {
+        const div = document.createElement('div');
+        const status = document.createElement('span');
+        status.className = t.pass ? 'pass' : 'fail';
+        status.textContent = t.pass ? 'PASS' : 'FAIL';
+        div.appendChild(status);
+        div.appendChild(document.createTextNode(' ' + t.name));
+
+        const detail = document.createElement('small');
+        detail.textContent = t.detail;
+        const br = document.createElement('br');
+        div.appendChild(br);
+        div.appendChild(detail);
+
+        results.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>

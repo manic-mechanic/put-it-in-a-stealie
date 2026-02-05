@@ -35,22 +35,28 @@ export function openCropModal(img, onCropComplete, restoreState = false) {
         cropper.setCanvasData(savedCanvasData);
         cropper.setData(savedCropData);
       }
-      
+
       // Get initial zoom data
       const imageData = cropper.getImageData();
-      const currentRatio = imageData.width / imageData.naturalWidth;
-      
-      // Update slider range
-      // Fixed range allows full freedom regardless of initial zoom
-      zoomSlider.min = 0.05; 
-      zoomSlider.max = 5;
-      zoomSlider.step = 0.05;
-      zoomSlider.value = currentRatio;
+      const initialRatio = imageData.width / imageData.naturalWidth;
+
+      // Update slider range based on initial zoom
+      // This fixes mobile where large images (4000px+) had tiny initial ratios (0.05)
+      // causing the 0-1 slider to zoom way too fast (moving from 0.05 to 0.1 = 2x zoom)
+      const minZoom = initialRatio;       // Can't zoom out past initial fit
+      const maxZoom = initialRatio * 3;   // 3x zoom is reasonable max
+      zoomSlider.min = minZoom;
+      zoomSlider.max = maxZoom;
+      zoomSlider.step = (maxZoom - minZoom) / 100;  // 100 smooth steps
+      zoomSlider.value = initialRatio;
     },
     zoom(e) {
       // Sync slider when zooming via pinch/scroll (not slider)
       if (!isSliderDriven) {
-        zoomSlider.value = e.detail.ratio;
+        // Clamp to slider range
+        const min = parseFloat(zoomSlider.min);
+        const max = parseFloat(zoomSlider.max);
+        zoomSlider.value = Math.max(min, Math.min(max, e.detail.ratio));
       }
     },
   });
@@ -65,14 +71,18 @@ export function openCropModal(img, onCropComplete, restoreState = false) {
   };
 
   const handleZoomIn = () => {
-    if(cropper) {
-        cropper.zoom(0.1);
+    if (cropper) {
+      // Use 10% of slider range for consistent button behavior
+      const step = (parseFloat(zoomSlider.max) - parseFloat(zoomSlider.min)) / 10;
+      cropper.zoom(step);
     }
   };
 
   const handleZoomOut = () => {
-    if(cropper) {
-        cropper.zoom(-0.1);
+    if (cropper) {
+      // Use 10% of slider range for consistent button behavior
+      const step = (parseFloat(zoomSlider.max) - parseFloat(zoomSlider.min)) / 10;
+      cropper.zoom(-step);
     }
   };
 
