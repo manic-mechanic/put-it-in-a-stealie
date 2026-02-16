@@ -1,6 +1,7 @@
 // cropperModal.js - Cropper.js integration
 
 let cropper = null;
+let cropperReady = false; // Guard against pre-ready interactions
 let isSliderDriven = false; // Prevent feedback loop
 let savedCropData = null; // Store crop state for recrop
 let savedCanvasData = null;
@@ -17,6 +18,8 @@ export function openCropModal(img, onCropComplete, restoreState = false) {
   // Set image source
   cropImage.src = img.src;
   modal.classList.remove('hidden');
+
+  cropperReady = false;
 
   // Initialize Cropper
   cropper = new Cropper(cropImage, {
@@ -49,6 +52,7 @@ export function openCropModal(img, onCropComplete, restoreState = false) {
       zoomSlider.max = maxZoom;
       zoomSlider.step = (maxZoom - minZoom) / 100;  // 100 smooth steps
       zoomSlider.value = initialRatio;
+      cropperReady = true;
     },
     zoom(e) {
       // Sync slider when zooming via pinch/scroll (not slider)
@@ -63,7 +67,7 @@ export function openCropModal(img, onCropComplete, restoreState = false) {
 
   // Zoom slider handler
   const handleZoom = (e) => {
-    if (cropper) {
+    if (cropper && cropperReady) {
       isSliderDriven = true;
       cropper.zoomTo(parseFloat(e.target.value));
       isSliderDriven = false;
@@ -71,7 +75,7 @@ export function openCropModal(img, onCropComplete, restoreState = false) {
   };
 
   const handleZoomIn = () => {
-    if (cropper) {
+    if (cropper && cropperReady) {
       // Use 10% of slider range for consistent button behavior
       const step = (parseFloat(zoomSlider.max) - parseFloat(zoomSlider.min)) / 10;
       cropper.zoom(step);
@@ -79,7 +83,7 @@ export function openCropModal(img, onCropComplete, restoreState = false) {
   };
 
   const handleZoomOut = () => {
-    if (cropper) {
+    if (cropper && cropperReady) {
       // Use 10% of slider range for consistent button behavior
       const step = (parseFloat(zoomSlider.max) - parseFloat(zoomSlider.min)) / 10;
       cropper.zoom(-step);
