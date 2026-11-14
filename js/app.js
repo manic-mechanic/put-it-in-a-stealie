@@ -1,7 +1,7 @@
 // app.js - Main orchestration
 import { initImageLoader } from './imageLoader.js';
-import { openCropModal, clearCropState } from './cropperModal.js';
-import { renderStealiePNG, saveStealiePNG } from './exporter.js';
+import { openCropModal } from './cropperModal.js';
+import { renderStealiePNG, saveStealiePNG, canShareFiles } from './exporter.js';
 import { STEALIE_GEOMETRY } from './constants.js';
 
 const dropZone = document.getElementById('drop-zone');
@@ -80,21 +80,6 @@ function drawCroppedImage(croppedCanvas) {
   ctx.restore();
 }
 
-function resetState() {
-  const ctx = userCanvas.getContext('2d');
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.clearRect(0, 0, userCanvas.width, userCanvas.height);
-  dropZone.classList.remove('has-image');
-  actionsDiv.classList.add('hidden');
-  if (currentImage) {
-    URL.revokeObjectURL(currentImage.src);
-  }
-  currentImage = null;
-  pngBlob = null;
-  pngPromise = null;
-  clearCropState();
-}
-
 // Caught errors never reach Sentry on their own, so send them explicitly.
 // window.Sentry is missing when an ad blocker blocks the loader.
 function reportError(err, context) {
@@ -134,8 +119,8 @@ btnRecrop.addEventListener('click', () => {
   }
 });
 
+// The current stealie stays until a new image is cropped and confirmed
 btnNew.addEventListener('click', () => {
-  resetState();
   fileInput.click();
 });
 
@@ -154,6 +139,21 @@ dropZone.addEventListener('keydown', (e) => {
     e.preventDefault();
     activateDropZone();
   }
+});
+
+// Phones get a share icon (Save opens the share sheet); desktop keeps the download icon
+if (canShareFiles()) {
+  document.getElementById('icon-download').classList.add('hidden');
+  document.getElementById('icon-share').classList.remove('hidden');
+  btnSave.title = 'Share';
+  btnSave.setAttribute('aria-label', 'Share');
+}
+
+// Privacy note: text keeps its space when hidden, so toggling doesn't shift the page
+const privacyToggle = document.getElementById('privacy-toggle');
+privacyToggle.addEventListener('click', () => {
+  const open = privacyToggle.parentElement.classList.toggle('open');
+  privacyToggle.setAttribute('aria-expanded', String(open));
 });
 
 initImageLoader(dropZone, fileInput, handleImageLoad, showError);

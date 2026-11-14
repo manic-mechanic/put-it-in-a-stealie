@@ -180,9 +180,3 @@ export function openCropModal(img, onCropComplete, onCancel, restoreState = fals
     }
   }
 }
-
-// Clear saved crop state (call when the current image is discarded)
-export function clearCropState() {
-  savedCropData = null;
-  savedCanvasData = null;
-}

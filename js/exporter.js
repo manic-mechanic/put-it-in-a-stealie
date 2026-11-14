@@ -73,9 +73,8 @@ export async function renderStealiePNG(stealieImg, croppedCanvas) {
 // Call this directly from a click handler so the share sheet is allowed to open.
 export async function saveStealiePNG(blob) {
   const file = new File([blob], FILE_NAME, { type: 'image/png' });
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-  if (isMobile && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+  if (canShareFiles(file)) {
     try {
       await navigator.share({
         files: [file],
@@ -107,6 +106,13 @@ export async function saveStealiePNG(blob) {
   // Revoking immediately can cancel the download in Safari and Firefox
   setTimeout(() => URL.revokeObjectURL(url), 10000);
   trackSave('download');
+}
+
+// True on phones that can send a PNG to the share sheet.
+// Desktop browsers download instead, even when they support sharing.
+export function canShareFiles(file = new File([''], FILE_NAME, { type: 'image/png' })) {
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  return Boolean(isMobile && navigator.share && navigator.canShare && navigator.canShare({ files: [file] }));
 }
 
 function trackSave(method) {

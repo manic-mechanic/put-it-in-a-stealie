@@ -193,21 +193,25 @@ footer a:hover {
   margin: 0.5rem auto 0;
 }
 
-.privacy-note summary {
+.privacy-toggle {
+  background: none;
+  border: none;
+  font: inherit;
+  color: inherit;
   cursor: pointer;
-  list-style: none; /* Hide the disclosure triangle */
 }
 
-.privacy-note summary::-webkit-details-marker {
-  display: none;
-}
-
-.privacy-note summary:hover {
+.privacy-toggle:hover {
   text-decoration: underline;
 }
 
-.privacy-note p {
+.privacy-text {
   margin-top: 0.25rem;
+  visibility: hidden;
+}
+
+.privacy-note.open .privacy-text {
+  visibility: visible;
 }
 
 /* Modal */
