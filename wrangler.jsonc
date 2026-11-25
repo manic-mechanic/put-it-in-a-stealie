@@ -4,6 +4,8 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "put-it-in-a-stealie",
   "compatibility_date": "2026-11-23",
+  // Required for Cloudflare's per-branch preview builds (can stay empty).
+  "previews": {},
   "observability": {
     "enabled": true
   },
