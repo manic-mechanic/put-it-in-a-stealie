@@ -1,0 +1,13 @@
+# Files in the repo that should NOT be published to the site.
+.git
+.gitignore
+.assetsignore
+.claude
+.gemini
+node_modules
+docs
+wrangler.jsonc
+CLAUDE.md
+concept.md
+notes.md
+test-zoom-slider.html
