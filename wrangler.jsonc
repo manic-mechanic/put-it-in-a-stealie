@@ -2,8 +2,11 @@
   // Cloudflare Workers config. The site is plain static files, no build step.
   // Deploy with: npx wrangler deploy
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "putitinastealie",
-  "compatibility_date": "2026-11-01",
+  "name": "put-it-in-a-stealie",
+  "compatibility_date": "2026-11-23",
+  "observability": {
+    "enabled": true
+  },
   "assets": {
     // Serve the repo root; files listed in .assetsignore are not uploaded.
     "directory": "."
