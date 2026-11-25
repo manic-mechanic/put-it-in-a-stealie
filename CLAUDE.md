@@ -38,7 +38,7 @@ python3 -m http.server 8000
 # Then open http://localhost:8000
 ```
 
-Deployed on Netlify from the repo root (`netlify.toml`), so every file in the repo is publicly served.
+Deployed on Cloudflare Workers (static assets) via Workers Builds: pushes to `main` deploy to production, other branches get preview URLs. `wrangler.jsonc` serves the repo root; anything not meant to be public (docs, config, notes) must be listed in `.assetsignore`.
 
 ## Testing
 
